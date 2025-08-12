@@ -1,0 +1,60 @@
+from app.database import SessionLocal
+from app.models.user import User
+from app.models.doctor import Doctor
+from app.models.patient import Patient
+from app.models.appointment import Appointment
+from datetime import datetime, timedelta
+from faker import Faker
+import random
+
+# Inicializar Faker
+fake = Faker("pt_BR")  # gera nomes e dados no formato brasileiro
+
+# Criar sessão com o banco
+db = SessionLocal()
+
+try:
+    # Criar médicos
+    doctors = []
+    for _ in range(5):
+        doctor = Doctor(
+            name=fake.name(),
+            crm=str(fake.random_int(min=10000, max=99999)),
+            specialty=random.choice(["Cardiologia", "Ortopedia", "Pediatria", "Clínico Geral"])
+        )
+        doctors.append(doctor)
+        db.add(doctor)
+
+    # Criar pacientes
+    patients = []
+    for _ in range(10):
+        patient = Patient(
+            name=fake.name(),
+            cpf=fake.cpf(),
+            email=fake.unique.email(),
+            birth_date=fake.date_of_birth(minimum_age=18, maximum_age=90)
+        )
+        patients.append(patient)
+        db.add(patient)
+
+    db.commit()
+
+    # Criar consultas
+    for _ in range(15):
+        appointment = Appointment(
+            patient_id=random.choice(patients).id,
+            doctor_id=random.choice(doctors).id,
+            datetime=datetime.now() + timedelta(days=random.randint(1, 30)),
+            notes=fake.sentence()
+        )
+        db.add(appointment)
+
+    db.commit()
+    print("✅ Dados aleatórios inseridos com sucesso!")
+
+except Exception as e:
+    print("❌ Erro ao inserir dados:", e)
+    db.rollback()
+
+finally:
+    db.close()
