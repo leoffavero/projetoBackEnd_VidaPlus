@@ -50,10 +50,10 @@ try:
         db.add(appointment)
 
     db.commit()
-    print("✅ Dados aleatórios inseridos com sucesso!")
+    print("Dados aleatórios inseridos com sucesso!")
 
 except Exception as e:
-    print("❌ Erro ao inserir dados:", e)
+    print("Erro ao inserir dados:", e)
     db.rollback()
 
 finally:
