@@ -11,7 +11,7 @@ class Appointment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date = Column(DateTime, default=datetime.utcnow)  # Data da consulta
-    reason = Column(String(255))  # Motivo da consulta
+    description = Column(String(255))  # Motivo da consulta
 
     # Relacionamentos
     patient_id = Column(Integer, ForeignKey("patients.id"))

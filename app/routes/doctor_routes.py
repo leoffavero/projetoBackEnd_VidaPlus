@@ -15,22 +15,18 @@ def get_db():
     finally:
         db.close()
 
-# Modelo Pydantic para criar médico
 class DoctorCreate(BaseModel):
     name: str
     specialty: Optional[str] = None
     email: Optional[str] = None
     crm: Optional[str] = None  # Registro profissional
 
-# Modelo Pydantic para atualizar médico
 class DoctorUpdate(BaseModel):
     name: Optional[str] = None
     specialty: Optional[str] = None
     email: Optional[str] = None
     crm: Optional[str] = None
 
-
-# ===================== ROTAS =====================
 
 # Listar médicos
 @router.get("/doctors")

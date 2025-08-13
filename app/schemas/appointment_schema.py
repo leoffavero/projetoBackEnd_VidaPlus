@@ -3,7 +3,7 @@ from datetime import datetime
 
 class AppointmentBase(BaseModel):
     date: datetime
-    reason: str
+    description: str
     patient_id: int
     doctor_id: int
 

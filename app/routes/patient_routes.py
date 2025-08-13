@@ -16,14 +16,14 @@ def get_db():
     finally:
         db.close()
 
-# Modelo Pydantic para criar paciente
+
 class PatientCreate(BaseModel):
     name: str
     cpf: Optional[str] = None
     email: Optional[str] = None
     birth_date: Optional[date] = None
 
-# Modelo Pydantic para atualizar paciente
+
 class PatientUpdate(BaseModel):
     name: Optional[str] = None
     cpf: Optional[str] = None
@@ -31,7 +31,6 @@ class PatientUpdate(BaseModel):
     birth_date: Optional[date] = None
 
 
-# ===================== ROTAS =====================
 
 # Listar pacientes
 @router.get("/patients")
