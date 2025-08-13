@@ -1,6 +1,11 @@
 from app.database import Base, engine
 
-#resetar o database (utilizar só se necessário)
+# IMPORTAR TODOS OS MODELOS
+from app.models.doctor import Doctor
+from app.models.patient import Patient
+from app.models.user import User
+from app.models.appointment import Appointment
+
 print("Apagando todas as tabelas...")
 Base.metadata.drop_all(bind=engine)
 

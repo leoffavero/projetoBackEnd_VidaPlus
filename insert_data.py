@@ -20,7 +20,8 @@ try:
         doctor = Doctor(
             name=fake.name(),
             crm=str(fake.random_int(min=10000, max=99999)),
-            specialty=random.choice(["Cardiologia", "Ortopedia", "Pediatria", "Clínico Geral"])
+            specialty=random.choice(["Cardiologia", "Ortopedia", "Pediatria", "Clínico Geral"]),
+            email=fake.unique.email()
         )
         doctors.append(doctor)
         db.add(doctor)
