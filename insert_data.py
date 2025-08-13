@@ -45,8 +45,8 @@ try:
         appointment = Appointment(
             patient_id=random.choice(patients).id,
             doctor_id=random.choice(doctors).id,
-            datetime=datetime.now() + timedelta(days=random.randint(1, 30)),
-            notes=fake.sentence()
+            date=datetime.now() + timedelta(days=random.randint(1, 30)),
+            reason=fake.sentence() 
         )
         db.add(appointment)
 

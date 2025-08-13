@@ -3,6 +3,9 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime
 
+from app.models.patient import Patient
+from app.models.doctor import Doctor
+
 class Appointment(Base):
     __tablename__ = "appointments"
 
