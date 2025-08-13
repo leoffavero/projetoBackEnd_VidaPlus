@@ -8,3 +8,4 @@ class Doctor(Base):
     name = Column(String(100), nullable=False)
     crm = Column(String(20), unique=True, nullable=False)
     specialty = Column(String(100))
+    email = Column(String(255))
