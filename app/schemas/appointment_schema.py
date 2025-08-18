@@ -14,4 +14,15 @@ class AppointmentResponse(AppointmentBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class AppointmentDetailResponse(BaseModel):
+    id: int
+    date: datetime
+    description: str
+    patient_name: str
+    doctor_name: str
+    doctor_specialty: str
+
+    class Config:
+        from_attributes = True

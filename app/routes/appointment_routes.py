@@ -4,16 +4,19 @@ from app.database import get_db
 from app.models.appointment import Appointment
 from app.models.patient import Patient
 from app.models.doctor import Doctor
-from app.schemas.appointment_schema import AppointmentCreate, AppointmentResponse
+from app.schemas.appointment_schema import AppointmentCreate, AppointmentResponse, AppointmentDetailResponse
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, date
+from sqlalchemy import func
 
 router = APIRouter()
 
-@router.get("/appointments")
+from datetime import date
+
+@router.get("/", response_model=List[AppointmentDetailResponse])
 def get_appointments(
     db: Session = Depends(get_db),
-    date: Optional[str] = Query(None, description="Filtra por data (YYYY-MM-DD)"),
+    date: Optional[date] = Query(None, description="Filtra por data exata"),
     patient_name: Optional[str] = Query(None, description="Filtra pelo nome do paciente"),
     doctor_specialty: Optional[str] = Query(None, description="Filtra pela especialidade do médico")
 ):
@@ -30,9 +33,8 @@ def get_appointments(
         .join(Doctor, Appointment.doctor_id == Doctor.id)
     )
 
-    # Aplica filtros se enviados
     if date:
-        query = query.filter(Appointment.date.like(f"{date}%"))
+        query = query.filter(Appointment.date == date)
     if patient_name:
         query = query.filter(Patient.name.ilike(f"%{patient_name}%"))
     if doctor_specialty:
@@ -51,6 +53,7 @@ def get_appointments(
         }
         for r in results
     ]
+
 
 @router.post("/appointments", response_model=AppointmentResponse)
 def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):
@@ -103,3 +106,48 @@ def delete_appointment(appointment_id: int, db: Session = Depends(get_db)):
     db.delete(appointment)
     db.commit()
     return {"message": "Consulta excluída com sucesso"}
+
+# Relatório por médico
+@router.get("/reports/by-doctor")
+def report_by_doctor(db: Session = Depends(get_db)):
+    results = (
+        db.query(
+            Doctor.name.label("doctor_name"),
+            Doctor.specialty.label("specialty"),
+            func.count(Appointment.id).label("total_appointments")
+        )
+        .join(Appointment, Appointment.doctor_id == Doctor.id)
+        .group_by(Doctor.id)
+        .all()
+    )
+    return results
+
+
+# Relatório por paciente
+@router.get("/reports/by-patient")
+def report_by_patient(db: Session = Depends(get_db)):
+    results = (
+        db.query(
+            Patient.name.label("patient_name"),
+            func.count(Appointment.id).label("total_appointments")
+        )
+        .join(Appointment, Appointment.patient_id == Patient.id)
+        .group_by(Patient.id)
+        .all()
+    )
+    return results
+
+
+# Relatório por especialidade
+@router.get("/reports/by-specialty")
+def report_by_specialty(db: Session = Depends(get_db)):
+    results = (
+        db.query(
+            Doctor.specialty,
+            func.count(Appointment.id).label("total_appointments")
+        )
+        .join(Appointment, Appointment.doctor_id == Doctor.id)
+        .group_by(Doctor.specialty)
+        .all()
+    )
+    return results
