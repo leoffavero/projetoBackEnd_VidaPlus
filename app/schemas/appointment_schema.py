@@ -26,3 +26,26 @@ class AppointmentDetailResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DoctorReport(BaseModel):
+    doctor_name: str
+    specialty: str
+    total_appointments: int
+
+    class Config:
+        from_attributes = True
+        
+class PatientReport(BaseModel):
+    patient_name: str
+    total_appointments: int
+
+    class Config:
+        from_attributes = True
+
+
+class SpecialtyReport(BaseModel):
+    specialty: str
+    total_appointments: int
+
+    class Config:
+        from_attributes = True

@@ -12,4 +12,4 @@ class PatientResponse(PatientBase):
     id: int
 
     class Config:
-        from_attributes = True  # Compatível com ORM
+        from_attributes = True
