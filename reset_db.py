@@ -1,6 +1,4 @@
 from app.database import Base, engine
-
-# IMPORTAR TODOS OS MODELOS
 from app.models.doctor import Doctor
 from app.models.patient import Patient
 from app.models.user import User

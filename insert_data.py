@@ -7,14 +7,12 @@ from datetime import datetime, timedelta
 from faker import Faker
 import random
 
-# Inicializar Faker
-fake = Faker("pt_BR")  # gera nomes e dados no formato brasileiro
+fake = Faker("pt_BR")
 
-# Criar sessão com o banco
 db = SessionLocal()
 
 try:
-    # Criar médicos
+#criar médicos
     doctors = []
     for _ in range(5):
         doctor = Doctor(
@@ -26,7 +24,7 @@ try:
         doctors.append(doctor)
         db.add(doctor)
 
-    # Criar pacientes
+#criar pacientes
     patients = []
     for _ in range(10):
         patient = Patient(
@@ -40,7 +38,7 @@ try:
 
     db.commit()
 
-    # Criar consultas
+#Criar consultas
     for _ in range(15):
         appointment = Appointment(
             patient_id=random.choice(patients).id,
