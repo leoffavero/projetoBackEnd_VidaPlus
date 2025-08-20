@@ -10,10 +10,10 @@ class Appointment(Base):
     __tablename__ = "appointments"
 
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, default=datetime.utcnow)  # Data da consulta
-    description = Column(String(255))  # Motivo da consulta
+    date = Column(DateTime, default=datetime.utcnow)
+    description = Column(String(255)) 
 
-    # Relacionamentos
+#Relacionamentos
     patient_id = Column(Integer, ForeignKey("patients.id"))
     doctor_id = Column(Integer, ForeignKey("doctors.id"))
 

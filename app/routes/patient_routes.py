@@ -8,7 +8,6 @@ from datetime import date
 
 router = APIRouter()
 
-# Função para obter a sessão do banco
 def get_db():
     db = SessionLocal()
     try:
@@ -32,12 +31,12 @@ class PatientUpdate(BaseModel):
 
 
 
-# Listar pacientes
+#Listar pacientes
 @router.get("/patients")
 def list_patients(db: Session = Depends(get_db)):
     return db.query(Patient).all()
 
-# Criar paciente
+#Criar paciente
 @router.post("/patients")
 def create_patient(patient: PatientCreate, db: Session = Depends(get_db)):
     new_patient = Patient(
@@ -51,7 +50,7 @@ def create_patient(patient: PatientCreate, db: Session = Depends(get_db)):
     db.refresh(new_patient)
     return {"message": "Paciente criado com sucesso!", "patient": new_patient}
 
-# Atualizar paciente
+#atualizar paciente
 @router.put("/patients/{patient_id}")
 def update_patient(patient_id: int, patient: PatientUpdate, db: Session = Depends(get_db)):
     db_patient = db.query(Patient).filter(Patient.id == patient_id).first()
@@ -66,7 +65,7 @@ def update_patient(patient_id: int, patient: PatientUpdate, db: Session = Depend
     db.refresh(db_patient)
     return {"message": "Paciente atualizado com sucesso!", "patient": db_patient}
 
-# Deletar paciente
+#Deletar paciente
 @router.delete("/patients/{patient_id}")
 def delete_patient(patient_id: int, db: Session = Depends(get_db)):
     db_patient = db.query(Patient).filter(Patient.id == patient_id).first()

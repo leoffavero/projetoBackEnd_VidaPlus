@@ -7,7 +7,6 @@ from typing import Optional
 
 router = APIRouter()
 
-# Função para obter a sessão do banco
 def get_db():
     db = SessionLocal()
     try:
@@ -19,7 +18,7 @@ class DoctorCreate(BaseModel):
     name: str
     specialty: Optional[str] = None
     email: Optional[str] = None
-    crm: Optional[str] = None  # Registro profissional
+    crm: Optional[str] = None 
 
 class DoctorUpdate(BaseModel):
     name: Optional[str] = None
@@ -28,12 +27,12 @@ class DoctorUpdate(BaseModel):
     crm: Optional[str] = None
 
 
-# Listar médicos
+#Listar médicos
 @router.get("/doctors")
 def list_doctors(db: Session = Depends(get_db)):
     return db.query(Doctor).all()
 
-# Criar médico
+#Criar médico
 @router.post("/doctors")
 def create_doctor(doctor: DoctorCreate, db: Session = Depends(get_db)):
     new_doctor = Doctor(
@@ -47,7 +46,7 @@ def create_doctor(doctor: DoctorCreate, db: Session = Depends(get_db)):
     db.refresh(new_doctor)
     return {"message": "Médico criado com sucesso!", "doctor": new_doctor}
 
-# Atualizar médico
+#Atualizar médico
 @router.put("/doctors/{doctor_id}")
 def update_doctor(doctor_id: int, doctor: DoctorUpdate, db: Session = Depends(get_db)):
     db_doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
@@ -61,7 +60,7 @@ def update_doctor(doctor_id: int, doctor: DoctorUpdate, db: Session = Depends(ge
     db.refresh(db_doctor)
     return {"message": "Médico atualizado com sucesso!", "doctor": db_doctor}
 
-# Deletar médico
+#deletar médico
 @router.delete("/doctors/{doctor_id}")
 def delete_doctor(doctor_id: int, db: Session = Depends(get_db)):
     db_doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()

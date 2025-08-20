@@ -14,4 +14,4 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     user_type = Column(Enum(UserType), nullable=False)
-    person_id = Column(Integer, nullable=True)  # Referência cruzada com paciente ou médico
+    person_id = Column(Integer, nullable=True)

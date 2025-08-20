@@ -57,17 +57,17 @@ def get_appointments(
 
 @router.post("/appointments", response_model=AppointmentResponse)
 def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):
-    # Verifica se o paciente existe
+#Verifica se o paciente existe
     patient = db.query(Patient).filter(Patient.id == appointment.patient_id).first()
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
 
-    # Verifica se o médico existe
+#Verifica se o médico existe
     doctor = db.query(Doctor).filter(Doctor.id == appointment.doctor_id).first()
     if not doctor:
         raise HTTPException(status_code=404, detail="Médico não encontrado")
 
-    # Cria a consulta
+#Criar a consulta
     new_appointment = Appointment(
         date=appointment.date,
         description=appointment.description,
@@ -80,74 +80,3 @@ def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get
     db.refresh(new_appointment)
 
     return new_appointment
-
-@router.put("/appointments/{appointment_id}", response_model=AppointmentResponse)
-def update_appointment(appointment_id: int, updated_data: AppointmentCreate, db: Session = Depends(get_db)):
-    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
-    if not appointment:
-        raise HTTPException(status_code=404, detail="Consulta não encontrada")
-
-    # Atualiza os dados
-    appointment.date = updated_data.date
-    appointment.description = updated_data.description
-    appointment.patient_id = updated_data.patient_id
-    appointment.doctor_id = updated_data.doctor_id
-
-    db.commit()
-    db.refresh(appointment)
-    return appointment
-
-@router.delete("/appointments/{appointment_id}")
-def delete_appointment(appointment_id: int, db: Session = Depends(get_db)):
-    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
-    if not appointment:
-        raise HTTPException(status_code=404, detail="Consulta não encontrada")
-
-    db.delete(appointment)
-    db.commit()
-    return {"message": "Consulta excluída com sucesso"}
-
-# Relatório por médico
-@router.get("/reports/by-doctor")
-def report_by_doctor(db: Session = Depends(get_db)):
-    results = (
-        db.query(
-            Doctor.name.label("doctor_name"),
-            Doctor.specialty.label("specialty"),
-            func.count(Appointment.id).label("total_appointments")
-        )
-        .join(Appointment, Appointment.doctor_id == Doctor.id)
-        .group_by(Doctor.id)
-        .all()
-    )
-    return results
-
-
-# Relatório por paciente
-@router.get("/reports/by-patient")
-def report_by_patient(db: Session = Depends(get_db)):
-    results = (
-        db.query(
-            Patient.name.label("patient_name"),
-            func.count(Appointment.id).label("total_appointments")
-        )
-        .join(Appointment, Appointment.patient_id == Patient.id)
-        .group_by(Patient.id)
-        .all()
-    )
-    return results
-
-
-# Relatório por especialidade
-@router.get("/reports/by-specialty")
-def report_by_specialty(db: Session = Depends(get_db)):
-    results = (
-        db.query(
-            Doctor.specialty,
-            func.count(Appointment.id).label("total_appointments")
-        )
-        .join(Appointment, Appointment.doctor_id == Doctor.id)
-        .group_by(Doctor.specialty)
-        .all()
-    )
-    return results
